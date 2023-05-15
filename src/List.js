@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useDeferredValue, useEffect, useMemo, useState } from "react";
 
-const List = ({ getItems }) => {
-  const [items, setItems] = useState([]);
+const List = ({ input }) => {
+  const LIST_SIZE = 20000;
+  const deferredInput = useDeferredValue(input);
+  const list = useMemo(() => {
+    const l = [];
+    for (let i = 0; i < LIST_SIZE; i++) {
+      l.push(<div key={i}>{input}</div>);
+    }
+    return l;
+  }, [deferredInput]);
 
-  useEffect(() => {
-    setItems(getItems(1));
-    console.log("updating items");
-  }, [getItems]);
-
-  return items.map((item) => <div key={item}>{item}</div>);
+  return list;
 };
 
 export default List;
