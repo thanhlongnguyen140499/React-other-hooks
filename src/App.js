@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useCallback, useMemo, useState } from "react";
+import List from "./List";
 
 function App() {
+  const [dark, setDark] = useState(false);
+  const [number, setNumber] = useState(1);
+
+  const theme = {
+    backgroundColor: dark ? "#333" : "#FFF",
+    color: dark ? "#FFF" : "#333",
+  };
+
+  const getItems = useCallback(
+    (incrementor) => {
+      return [number, number + 1 + incrementor, number + 2 + incrementor];
+    },
+    [number]
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={theme}>
+      <input
+        type="number"
+        value={number}
+        onChange={(e) => setNumber(parseInt(e.target.value))}
+      />
+      <button onClick={() => setDark((prevDark) => !prevDark)}>
+        Toggle theme
+      </button>
+      <List getItems={getItems} />
     </div>
   );
 }
