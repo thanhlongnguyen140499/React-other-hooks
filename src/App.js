@@ -1,35 +1,43 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useReducer, useState } from "react";
 import List from "./List";
 
-function App() {
-  const [dark, setDark] = useState(false);
-  const [number, setNumber] = useState(1);
+const ACTIONS = {
+  INCREMENT: "increment",
+  DECREMENT: "decrement",
+};
 
-  const theme = {
-    backgroundColor: dark ? "#333" : "#FFF",
-    color: dark ? "#FFF" : "#333",
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.INCREMENT:
+      return { count: state.count + 1 };
+    case ACTIONS.DECREMENT:
+      return { count: state.count - 1 };
+    default:
+      return state;
+  }
+};
+
+function App() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+  // const [count, setCount] = useState(0);
+
+  const increment = () => {
+    // setCount((prevCount) => prevCount + 1);
+    dispatch({ type: ACTIONS.INCREMENT });
   };
 
-  const getItems = useCallback(
-    (incrementor) => {
-      return [number, number + 1 + incrementor, number + 2 + incrementor];
-    },
-    [number]
-  );
+  const decrement = () => {
+    // setCount((prevCount) => prevCount - 1);
+    dispatch({ type: ACTIONS.DECREMENT });
+  };
 
   return (
-    <div style={theme}>
-      <input
-        type="number"
-        value={number}
-        onChange={(e) => setNumber(parseInt(e.target.value))}
-      />
-      <button onClick={() => setDark((prevDark) => !prevDark)}>
-        Toggle theme
-      </button>
-      <List getItems={getItems} />
+    <div>
+      <button onClick={decrement}>-</button>
+      <span>{state.count}</span>
+      <button onClick={increment}>+</button>
     </div>
   );
 }
